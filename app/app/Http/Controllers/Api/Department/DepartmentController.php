@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Department\CreateDepartmentRequest;
 use App\Http\Requests\Department\EditDepartmentRequest;
-use App\Http\Resources\Department\ListDepartmentResource;
+use App\Http\Resources\Department\DepartmentCollection;
 use App\Services\Department\DepartmentService;
 
 class DepartmentController extends Controller
@@ -21,7 +21,7 @@ class DepartmentController extends Controller
     {
         $departments = $this->departmentService->getList();
 
-        return ListDepartmentResource::collection(collect($departments));
+        return new DepartmentCollection($departments);
     }
 
     public function store(CreateDepartmentRequest $request)

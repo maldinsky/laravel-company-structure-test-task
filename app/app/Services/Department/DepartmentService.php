@@ -6,7 +6,7 @@ use App\Models\Department\Department;
 
 class DepartmentService
 {
-    public function getItem(int $id)
+    public function getItem(int $id): Department
     {
         return Department::findOrFail($id);
     }
@@ -29,7 +29,7 @@ class DepartmentService
         return $department;
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         $department = Department::findOrFail($id);
 

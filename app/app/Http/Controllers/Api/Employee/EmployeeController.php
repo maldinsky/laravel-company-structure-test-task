@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\Employee;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\CreateEmployeeRequest;
 use App\Http\Requests\Employee\EditEmployeeRequest;
+use App\Http\Resources\Employee\EmployeeCollection;
 use App\Http\Resources\Employee\EmployeeResource;
-use App\Http\Resources\Employee\ListEmployeeResource;
 use App\Services\Employee\EmployeeService;
 
 class EmployeeController extends Controller
@@ -21,7 +21,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = $this->employeeService->getList();
-        return ListEmployeeResource::collection(collect($employees));
+        return new EmployeeCollection($employees);
     }
 
     public function store(CreateEmployeeRequest $request)

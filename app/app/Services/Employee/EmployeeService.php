@@ -6,7 +6,7 @@ use App\Models\Employee\Employee;
 
 class EmployeeService
 {
-    public function getItem(int $id)
+    public function getItem(int $id): Employee
     {
         return Employee::findOrFail($id);
     }
@@ -43,7 +43,7 @@ class EmployeeService
         return $employee;
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         $employee = Employee::findOrFail($id);
         $employee->delete();
