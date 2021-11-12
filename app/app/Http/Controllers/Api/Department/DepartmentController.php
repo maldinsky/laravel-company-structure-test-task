@@ -6,54 +6,56 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Department\CreateDepartmentRequest;
 use App\Http\Requests\Department\EditDepartmentRequest;
 use App\Http\Resources\Department\ListDepartmentResource;
-use App\Models\Department\Department;
+use App\Services\Department\DepartmentService;
 
 class DepartmentController extends Controller
 {
+    private $departmentService;
+
+    public function __construct(DepartmentService $departmentService)
+    {
+        $this->departmentService = $departmentService;
+    }
+
     public function index()
     {
-        $departments = Department::with('employees')->get();
+        $departments = $this->departmentService->getList();
 
         return ListDepartmentResource::collection(collect($departments));
     }
 
     public function store(CreateDepartmentRequest $request)
     {
-        $department = new Department([
-            'name' => $request->input('name'),
-        ]);
-        $department->save();
+        $this->departmentService->create($request->toArray());
 
         return response()->json('Отдел успешно создан!');
     }
 
     public function show(int $id)
     {
-        $department = Department::findOrFail($id);
+        $department = $this->departmentService->getItem($id);
+
         return response()->json($department);
     }
 
     public function update(int $id, EditDepartmentRequest $request)
     {
-        $department = Department::findOrFail($id);
-        $department->update($request->all());
+        $this->departmentService->edit($id, $request->toArray());
 
         return response()->json('Отдел успешно обновлен!');
     }
 
     public function destroy(int $id)
     {
-        $department = Department::findOrFail($id);
-
-        if($department->employees->count()) {
+        try {
+            $this->departmentService->delete($id);
+        } catch (\Exception $exception) {
             return response()->json([
                 'errors' => [
                     'Отдел не может быть удален! В нем есть сотрудники'
                 ]
             ], 422);
         }
-
-        $department->delete();
 
         return response()->json('Отдел удален!');
     }
